@@ -156,7 +156,9 @@ WebIDL::ExceptionOr<void> CanvasPath::ellipse(float x, float y, float radius_x, 
     auto start_point = resolve_point_with_angle(start_angle);
     auto end_point = resolve_point_with_angle(end_angle);
 
-    auto delta_theta = end_angle - start_angle;
+    float const delta_theta = start_angle > end_angle
+        ? AK::Pi<float> * 2 - (start_angle - end_angle)
+        : end_angle - start_angle;
 
     auto transform = active_transform();
 
