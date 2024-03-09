@@ -1,0 +1,69 @@
+<link rel="match" href="reference/canvas-arc.html" />
+<style>
+  * {
+    margin: 0;
+  }
+  body {
+    background-color: white;
+  }
+</style>
+<canvas id="artcanvas" width="500" height="500" />
+<script>
+  const ctx = document.getElementById("artcanvas").getContext("2d");
+  ctx.fillStyle = 'black';
+  ctx.fillRect(0, 0, 500, 500);
+
+  // Positive values
+  ctx.fillStyle = "pink";
+  ctx.beginPath();
+  ctx.arc(100, 100, 50, 0.75 * Math.PI, 0.25 * Math.PI);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.arc(100, 150, 50, 0.25 * Math.PI, 0.75 * Math.PI);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.arc(100, 300, 50, 0.5 * Math.PI, 0);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.arc(100, 350, 50, 0, 0.5 * Math.PI);
+  ctx.fill();
+
+  // Negative values
+  ctx.fillStyle = "lightblue";
+  ctx.beginPath();
+  ctx.arc(200, 100, 50, -0.75 * Math.PI, -0.25 * Math.PI);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.arc(200, 150, 50, -0.25 * Math.PI, -0.75 * Math.PI);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.arc(200, 300, 50, -0.5 * Math.PI, 0);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.arc(200, 350, 50, 0, -0.5 * Math.PI);
+  ctx.fill();
+
+  // Arc angle is more than one revolution
+  ctx.fillStyle = "lightgreen";
+  ctx.beginPath();
+  ctx.arc(300, 100, 50, 5 * Math.PI, -2 * Math.PI);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.arc(300, 150, 50, -1 * Math.PI, 4 * Math.PI);
+  ctx.fill();
+
+  // Full circle
+  ctx.fillStyle = "lightyellow";
+  ctx.beginPath();
+  ctx.arc(400, 100, 50, 0, 2 * Math.PI);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.arc(400, 200, 50, 2 * Math.PI, 0);
+  ctx.fill();
+
+  // Zero distance (not visible)
+  ctx.fillStyle = "red";
+  ctx.beginPath();
+  ctx.arc(400, 400, 50, 0, 0);
+  ctx.fill();
+</script>
