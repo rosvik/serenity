@@ -116,8 +116,16 @@ WebIDL::ExceptionOr<void> CanvasPath::ellipse(float x, float y, float radius_x, 
         // So we slightly fudge the numbers here to correct for that.
         end_angle = tau * 0.9999f;
     } else {
+        bool const angles_are_non_equal = start_angle != end_angle;
         start_angle = fmodf(start_angle, tau);
         end_angle = fmodf(end_angle, tau);
+        // If angles are equal only after applying modulo, the arc is the whole ellipse, and not zero-length.
+        if (start_angle == end_angle && angles_are_non_equal) {
+            start_angle = 0;
+            // FIXME: elliptical_arc_to() incorrectly handles the case where the start/end points are very close.
+            // So we slightly fudge the numbers here to correct for that.
+            end_angle = tau * 0.9999f;
+        }
     }
 
     // Then, figure out where the ends of the arc are.
