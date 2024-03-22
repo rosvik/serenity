@@ -109,22 +109,31 @@ WebIDL::ExceptionOr<void> CanvasPath::ellipse(float x, float y, float radius_x, 
     if (radius_y < 0)
         return WebIDL::IndexSizeError::create(m_self->realm(), MUST(String::formatted("The minor-axis radius provided ({}) is negative.", radius_y)));
 
-    if (constexpr float tau = M_PI * 2; (!counter_clockwise && (end_angle - start_angle) >= tau)
-        || (counter_clockwise && (start_angle - end_angle) >= tau)) {
-        start_angle = 0;
-        // FIXME: elliptical_arc_to() incorrectly handles the case where the start/end points are very close.
-        // So we slightly fudge the numbers here to correct for that.
-        end_angle = tau * 0.9999f;
-    } else {
-        bool const angles_are_non_equal = start_angle != end_angle;
-        start_angle = fmodf(start_angle, tau);
-        end_angle = fmodf(end_angle, tau);
-        // If angles are equal only after applying modulo, the arc is the whole ellipse, and not zero-length.
-        if (start_angle == end_angle && angles_are_non_equal) {
+    {
+        constexpr float tau = M_PI * 2;
+        float const mod_start_angle = fmodf(start_angle, tau);
+        float const mod_end_angle = fmodf(end_angle, tau);
+
+        // If the start angle is equal to the end angle, nothing is drawn.
+        // But if the angles are equal only after modding by tau, we should draw the whole ellipse.
+        auto const equal_only_after_mod = mod_start_angle == mod_end_angle && start_angle != end_angle;
+
+        // If counterclockwise is false and endAngle − startAngle is equal to or greater than 2π,
+        // or, if counterclockwise is true and startAngle − endAngle is equal to or greater than 2π,
+        // then the arc is the whole circumference of this ellipse
+        if (!counter_clockwise && ((end_angle - start_angle) >= tau || equal_only_after_mod)) {
             start_angle = 0;
             // FIXME: elliptical_arc_to() incorrectly handles the case where the start/end points are very close.
             // So we slightly fudge the numbers here to correct for that.
             end_angle = tau * 0.9999f;
+        } else if (counter_clockwise && ((start_angle - end_angle) >= tau || equal_only_after_mod)) {
+            // FIXME: elliptical_arc_to() incorrectly handles the case where the start/end points are very close.
+            // So we slightly fudge the numbers here to correct for that.
+            start_angle = tau * 0.9999f;
+            end_angle = 0;
+        } else {
+            start_angle = mod_start_angle;
+            end_angle = mod_end_angle;
         }
     }
 
@@ -164,9 +173,16 @@ WebIDL::ExceptionOr<void> CanvasPath::ellipse(float x, float y, float radius_x, 
     auto start_point = resolve_point_with_angle(start_angle);
     auto end_point = resolve_point_with_angle(end_angle);
 
-    float const delta_theta = start_angle > end_angle
-        ? AK::Pi<float> * 2 - (start_angle - end_angle)
-        : end_angle - start_angle;
+    float delta_theta;
+    if (!counter_clockwise) {
+        delta_theta = start_angle > end_angle
+            ? AK::Pi<float> * 2 - (start_angle - end_angle)
+            : end_angle - start_angle;
+    } else {
+        delta_theta = start_angle < end_angle
+            ? AK::Pi<float> * 2 - (end_angle - start_angle)
+            : start_angle - end_angle;
+    }
 
     auto transform = active_transform();
 
