@@ -7,11 +7,11 @@
     background-color: white;
   }
 </style>
-<canvas id="artcanvas" width="500" height="500" />
+<canvas id="artcanvas" width="1000" height="500" />
 <script>
   const ctx = document.getElementById("artcanvas").getContext("2d");
   ctx.fillStyle = 'black';
-  ctx.fillRect(0, 0, 500, 500);
+  ctx.fillRect(0, 0, 1000, 500);
 
   // Positive values
   ctx.fillStyle = "pink";
@@ -65,5 +65,60 @@
   ctx.fillStyle = "red";
   ctx.beginPath();
   ctx.arc(400, 400, 50, 0, 0);
+  ctx.fill();
+
+  // Counter-clockwise
+  // Positive values
+  ctx.fillStyle = "pink";
+  ctx.beginPath();
+  ctx.arc(600, 100, 50, 0.75 * Math.PI, 0.25 * Math.PI, true);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.arc(600, 150, 50, 0.25 * Math.PI, 0.75 * Math.PI, true);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.arc(600, 300, 50, 0.5 * Math.PI, 0, true);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.arc(600, 350, 50, 0, 0.5 * Math.PI, true);
+  ctx.fill();
+
+  // Negative values
+  ctx.fillStyle = "lightblue";
+  ctx.beginPath();
+  ctx.arc(700, 100, 50, -0.75 * Math.PI, -0.25 * Math.PI, true);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.arc(700, 150, 50, -0.25 * Math.PI, -0.75 * Math.PI, true);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.arc(700, 300, 50, -0.5 * Math.PI, 0, true);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.arc(700, 350, 50, 0, -0.5 * Math.PI, true);
+  ctx.fill();
+
+  // Arc angle is more than one revolution
+  ctx.fillStyle = "lightgreen";
+  ctx.beginPath();
+  ctx.arc(800, 100, 50, 5 * Math.PI, -2 * Math.PI, true);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.arc(800, 150, 50, -1 * Math.PI, 4 * Math.PI, true);
+  ctx.fill();
+
+  // Full circle
+  ctx.fillStyle = "lightyellow";
+  ctx.beginPath();
+  ctx.arc(900, 100, 50, 0, 2 * Math.PI, true);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.arc(900, 200, 50, 2 * Math.PI, 0, true);
+  ctx.fill();
+
+  // Zero distance (not visible)
+  ctx.fillStyle = "red";
+  ctx.beginPath();
+  ctx.arc(900, 400, 50, 0, 0, true);
   ctx.fill();
 </script>
